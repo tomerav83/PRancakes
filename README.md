@@ -20,6 +20,25 @@ go test ./...       # unit tests, no network
 go build -o prancakes .
 ```
 
+### The live view
+
+`prancakes serve` starts a local server that queries `gh` on demand and serves
+the page from the same origin, so Refresh re-reads GitHub without regenerating
+a file or rebuilding anything. There is no polling — the view updates when you
+ask it to.
+
+```bash
+cd web && npm run build     # once, so there is a page to serve
+cd cli && go run . serve    # http://127.0.0.1:8080/stack
+```
+
+The page only works under `serve`: it is served by this binary, not by
+`npm run dev`, and the copy in the public export has no API behind it.
+
+It binds loopback only — it reports a private repository's state and has no
+authentication of its own. `--port` moves it; `--site` points at a different
+build of the page.
+
 Run it from inside a GitHub repository. Pull requests are grouped by following
 each one's base branch: a pull request opened against a branch that has its own
 pull request is stacked on top of it, and the row for the branch you are

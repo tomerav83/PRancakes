@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"reflect"
 	"strings"
@@ -379,8 +380,45 @@ func TestRenderTextIndentsByDepth(t *testing.T) {
 	}
 }
 
+func TestServeRequested(t *testing.T) {
+	tests := []struct {
+		args []string
+		want bool
+	}{
+		{nil, false},
+		{[]string{}, false},
+		{[]string{"serve"}, true},
+		{[]string{"serve", "--port", "9000"}, true},
+		// serve has to be dispatched before flag parsing, or its own flags
+		// collide with the top-level ones.
+		{[]string{"--json"}, false},
+		{[]string{"--json", "serve"}, false},
+		{[]string{"sync"}, false},
+	}
+	for _, tt := range tests {
+		if got := serveRequested(tt.args); got != tt.want {
+			t.Errorf("serveRequested(%q) = %v, want %v", tt.args, got, tt.want)
+		}
+	}
+}
+
+func TestCaptureReportsAStalledCommand(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+
+	_, err := capture(ctx, "sh", "-c", "sleep 5")
+	if err == nil {
+		t.Fatal("expected an error when the context is already done")
+	}
+	// gh hanging must read as "did not finish", not as whatever half-written
+	// noise it left behind.
+	if !strings.Contains(err.Error(), "did not finish") {
+		t.Errorf("error = %q, want it to report the command never finished", err)
+	}
+}
+
 func TestCaptureMissingBinaryExplainsHowToInstall(t *testing.T) {
-	_, err := capture("gh-that-is-definitely-not-installed")
+	_, err := capture(context.Background(), "gh-that-is-definitely-not-installed")
 	if err == nil {
 		t.Fatal("expected an error for a binary that is not on PATH")
 	}
@@ -390,7 +428,7 @@ func TestCaptureMissingBinaryExplainsHowToInstall(t *testing.T) {
 }
 
 func TestCaptureSurfacesStderrAndAuthRemedy(t *testing.T) {
-	_, err := capture("sh", "-c", "echo 'gh: To get started with GitHub CLI, please run: gh auth login' >&2; exit 1")
+	_, err := capture(context.Background(), "sh", "-c", "echo 'gh: To get started with GitHub CLI, please run: gh auth login' >&2; exit 1")
 	if err == nil {
 		t.Fatal("expected an error when the command exits non-zero")
 	}
@@ -404,7 +442,7 @@ func TestCaptureSurfacesStderrAndAuthRemedy(t *testing.T) {
 }
 
 func TestCaptureDoesNotMistakeAuthorForAuth(t *testing.T) {
-	_, err := capture("sh", "-c", "echo 'no commits found for author octocat' >&2; exit 1")
+	_, err := capture(context.Background(), "sh", "-c", "echo 'no commits found for author octocat' >&2; exit 1")
 	if err == nil {
 		t.Fatal("expected an error when the command exits non-zero")
 	}
@@ -430,7 +468,7 @@ func TestRenderTextShowsReviewAndMergeState(t *testing.T) {
 }
 
 func TestCaptureNonAuthFailureKeepsStderrWithoutRemedy(t *testing.T) {
-	_, err := capture("sh", "-c", "echo 'no git remotes found' >&2; exit 1")
+	_, err := capture(context.Background(), "sh", "-c", "echo 'no git remotes found' >&2; exit 1")
 	if err == nil {
 		t.Fatal("expected an error when the command exits non-zero")
 	}

@@ -5,6 +5,7 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
 	"flag"
@@ -95,17 +96,39 @@ type Doc struct {
 }
 
 func main() {
+	if serveRequested(os.Args[1:]) {
+		if err := serveCmd(os.Args[2:]); err != nil {
+			fmt.Fprintln(os.Stderr, "prancakes: "+err.Error())
+			os.Exit(1)
+		}
+		return
+	}
+
 	asJSON := flag.Bool("json", false, "emit the stack as JSON instead of text")
+	flag.Usage = func() {
+		fmt.Fprint(flag.CommandLine.Output(),
+			"prancakes — the current state of this repository's stacked pull requests\n\n"+
+				"  prancakes            print the stacks\n"+
+				"  prancakes --json     the same data as JSON\n"+
+				"  prancakes serve      serve the live view on 127.0.0.1 (see `prancakes serve -h`)\n\n")
+		flag.PrintDefaults()
+	}
 	flag.Parse()
 
-	// No subcommands exist yet. Saying so beats silently printing the default
-	// view when someone types `prancakes sync` and believes it ran.
+	// Saying so beats silently printing the default view when someone types
+	// `prancakes sync` and believes it ran.
 	if flag.NArg() > 0 {
-		fmt.Fprintf(os.Stderr, "prancakes: unexpected argument %q — this command takes no arguments\n", flag.Arg(0))
+		hint := "the only subcommand is `prancakes serve`"
+		if flag.Arg(0) == "serve" {
+			// `prancakes --json serve` lands here; "unknown subcommand" would
+			// be a lie, the word is just in the wrong place.
+			hint = "put it first: `prancakes serve`"
+		}
+		fmt.Fprintf(os.Stderr, "prancakes: unexpected argument %q — %s\n", flag.Arg(0), hint)
 		os.Exit(2)
 	}
 
-	doc, err := collect()
+	doc, err := collect(context.Background())
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "prancakes: "+err.Error())
 		os.Exit(1)
@@ -115,6 +138,12 @@ func main() {
 		fmt.Fprintln(os.Stderr, "prancakes: "+err.Error())
 		os.Exit(1)
 	}
+}
+
+// serveRequested decides the dispatch before flag parsing, so `serve` can
+// carry flags of its own without colliding with the top-level ones.
+func serveRequested(args []string) bool {
+	return len(args) > 0 && args[0] == "serve"
 }
 
 // emit writes the view. It is separate from main so both branches can be
@@ -132,8 +161,8 @@ func emit(w io.Writer, d Doc, asJSON bool) error {
 
 // collect asks gh for the repository and its open pull requests, and git for
 // the branch you are standing on.
-func collect() (Doc, error) {
-	repoOut, err := capture("gh", "repo", "view", "--json", "nameWithOwner,defaultBranchRef")
+func collect(ctx context.Context) (Doc, error) {
+	repoOut, err := capture(ctx, "gh", "repo", "view", "--json", "nameWithOwner,defaultBranchRef")
 	if err != nil {
 		return Doc{}, err
 	}
@@ -147,7 +176,7 @@ func collect() (Doc, error) {
 		return Doc{}, fmt.Errorf("reading `gh repo view` output: %w", err)
 	}
 
-	prOut, err := capture("gh", "pr", "list", "--state", "open", "--limit", strconv.Itoa(prLimit), "--json", prFields)
+	prOut, err := capture(ctx, "gh", "pr", "list", "--state", "open", "--limit", strconv.Itoa(prLimit), "--json", prFields)
 	if err != nil {
 		return Doc{}, err
 	}
@@ -162,7 +191,7 @@ func collect() (Doc, error) {
 	// A detached HEAD yields an empty branch name. That is not a failure —
 	// it only means no row gets marked as the one you are on.
 	branch := ""
-	if out, err := capture("git", "branch", "--show-current"); err == nil {
+	if out, err := capture(ctx, "git", "branch", "--show-current"); err == nil {
 		branch = strings.TrimSpace(string(out))
 	}
 
@@ -346,8 +375,8 @@ func byNumber(prs []ghPR) {
 // capture runs a command and returns its stdout, turning the two failures a
 // user can actually fix — the tool is missing, or gh is not authenticated —
 // into messages that say what to do next.
-func capture(name string, args ...string) ([]byte, error) {
-	cmd := exec.Command(name, args...)
+func capture(ctx context.Context, name string, args ...string) ([]byte, error) {
+	cmd := exec.CommandContext(ctx, name, args...)
 	var stderr bytes.Buffer
 	cmd.Stderr = &stderr
 
@@ -359,6 +388,13 @@ func capture(name string, args ...string) ([]byte, error) {
 		return nil, fmt.Errorf("%s is not on your PATH, and PRancakes needs it — install it: %s", name, installHint(name))
 	}
 
+	cmdline := strings.Join(append([]string{name}, args...), " ")
+	// A cancelled context means gh hung — say that, rather than reporting
+	// whatever truncated noise it left on stderr.
+	if ctxErr := ctx.Err(); ctxErr != nil {
+		return nil, fmt.Errorf("`%s` did not finish: %w", cmdline, ctxErr)
+	}
+
 	msg := strings.TrimSpace(stderr.String())
 	if msg == "" {
 		msg = err.Error()
@@ -366,7 +402,7 @@ func capture(name string, args ...string) ([]byte, error) {
 	if looksLikeAuth(msg) {
 		msg += "\n  fix: gh auth login"
 	}
-	return nil, fmt.Errorf("`%s` failed: %s", strings.Join(append([]string{name}, args...), " "), msg)
+	return nil, fmt.Errorf("`%s` failed: %s", cmdline, msg)
 }
 
 func installHint(name string) string {

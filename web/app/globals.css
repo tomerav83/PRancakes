@@ -579,3 +579,130 @@ kbd {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* --- live stack view (/stack) ---------------------------------------- */
+
+.live {
+  padding-block: clamp(2rem, 6vw, 3.5rem);
+}
+
+.live__head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.live__title {
+  font-size: clamp(1.7rem, 3.4vw, 2.6rem);
+  margin-block: 0.5rem 0.4rem;
+  /* Repository names are long and unbreakable; wrap rather than scroll. */
+  overflow-wrap: anywhere;
+}
+
+.live__meta {
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}
+
+.live__meta code {
+  font-size: 0.85rem;
+}
+
+.live__problem {
+  margin-bottom: 2rem;
+}
+
+.live__error {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.85rem;
+  white-space: pre-wrap;
+}
+
+.live__stack {
+  margin-bottom: 2.5rem;
+}
+
+/* The base branch labels the foot of the chain, so it leads the group here
+   rather than trailing it as it does in the homepage illustration. */
+.live__stack .stack__base {
+  margin-bottom: 0.9rem;
+}
+
+/* Depth as a custom property, not a class per level: any nesting works, and
+   the indent shrinks with the viewport instead of pushing rows off-screen. */
+.pr--live {
+  margin-inline-start: calc(var(--depth, 0) * clamp(0.75rem, 3vw, 1.75rem));
+}
+
+/* The homepage rows restyle their neighbours on hover to teach what a rebase
+   would move. These rows are real data, so they hold still — the tilt stays,
+   the reveal does not. */
+.pr--live:hover,
+.pr--live:has(~ .pr--live:hover) {
+  background: var(--batter);
+}
+
+.pr--live:nth-child(odd):hover,
+.pr--live:nth-child(odd):has(~ .pr--live:hover) {
+  transform: rotate(-0.5deg);
+}
+
+.pr--live:nth-child(even):hover,
+.pr--live:nth-child(even):has(~ .pr--live:hover) {
+  transform: rotate(0.4deg);
+}
+
+.pr--live .pr__branch {
+  flex: 0 0 auto;
+}
+
+.pr__title {
+  flex: 1 1 12ch;
+  min-width: 0;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* State reads from the word, never from the colour alone — the palette has no
+   red or green, and colour-only status fails anyone who cannot see it. */
+.pr__state {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  background: var(--card);
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  padding: 0.12rem 0.55rem;
+}
+
+.pr__state--alert {
+  background: var(--ink);
+  color: var(--cream);
+}
+
+.pr__state--here {
+  background: var(--cape);
+}
+
+@media (max-width: 860px) {
+  .pr--live .pr__branch {
+    flex: 1 1 auto;
+  }
+
+  /* The title is the only human-readable identifier on the row, so it wraps
+     to its own line rather than being removed — display:none would take it
+     out of the accessibility tree too. */
+  .pr__title {
+    flex-basis: 100%;
+    white-space: normal;
+    overflow: visible;
+  }
+}
