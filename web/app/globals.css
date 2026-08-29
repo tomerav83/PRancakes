@@ -107,7 +107,10 @@ kbd {
 }
 
 .topbar__inner {
+  /* Full-bleed: wordmark left, links right, even on wide screens. */
+  max-width: none;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
@@ -124,6 +127,12 @@ kbd {
 
 .wordmark span {
   color: var(--cape-deep);
+}
+
+.topbar__nav {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
 }
 
 .topbar__link {

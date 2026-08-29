@@ -10,9 +10,16 @@ export default function Home() {
           <span className="wordmark">
             <span>PR</span>ancakes
           </span>
-          <a className="topbar__link" href={REPO}>
-            GitHub
-          </a>
+          {/* A plain anchor, like the GitHub link beside it: next/link would
+              prefetch the /stack payload on a page most visitors never leave. */}
+          <nav className="topbar__nav" aria-label="Site">
+            <a className="topbar__link" href="/stack">
+              Stacks
+            </a>
+            <a className="topbar__link" href={REPO}>
+              GitHub
+            </a>
+          </nav>
         </div>
       </header>
 
