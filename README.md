@@ -28,6 +28,13 @@ a file or rebuilding anything. There is no polling — the view updates when you
 ask it to.
 
 ```bash
+make                # build the page if it is stale, then serve it
+make PORT=9000      # the same, on another port
+```
+
+Or run the two steps yourself:
+
+```bash
 cd web && npm run build     # once, so there is a page to serve
 cd cli && go run . serve    # http://127.0.0.1:8080/stack
 ```
