@@ -9,3 +9,7 @@ _bmad-output/
 
 # OS
 .DS_Store
+
+# Build output
+cli/cli*
+cli/prancakes*
