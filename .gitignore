@@ -1,0 +1,11 @@
+# Editors
+.idea/
+.vscode/
+
+# Agent tooling (local, not part of the project)
+.claude/
+_bmad/
+_bmad-output/
+
+# OS
+.DS_Store
