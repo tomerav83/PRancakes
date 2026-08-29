@@ -1,0 +1,581 @@
+/* ==========================================================================
+   PRancakes brand tokens
+   Palette is lifted straight off the mascot: batter, syrup, cape.
+   House rule for this identity: everything is *drawn*. Flat fills, heavy ink
+   borders, hard offset shadows. No gradients, no blurred shadows, anywhere.
+   ========================================================================== */
+
+:root {
+  --ink: #2e1b0f;
+  --ink-soft: #6b4f3a;
+  --cream: #fbe3a0;
+  --cream-deep: #f6d275;
+  --cream-dim: #c2a67f;
+  --batter: #f3dfb8;
+  --card: #fff8e6;
+  --golden: #c98a3f;
+  --cape: #1b9be8;
+  /* Darkened from the mascot's cape shadow so 12px eyebrows and body links
+     clear 4.5:1 on both the cream and cream-deep grounds. */
+  --cape-deep: #0a5f8f;
+
+  --line: 3px solid var(--ink);
+  --drop: 6px 6px 0 var(--ink);
+  --drop-sm: 4px 4px 0 var(--ink);
+  --radius: 18px;
+
+  --shell: 1120px;
+  --gutter: clamp(1.25rem, 5vw, 3rem);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 900;
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  margin: 0;
+  font-variation-settings: "SOFT" 60, "WONK" 1;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: var(--cape-deep);
+  text-underline-offset: 3px;
+}
+
+a:hover {
+  color: var(--ink);
+}
+
+:focus-visible {
+  outline: 3px solid var(--cape-deep);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+code,
+kbd {
+  font-family: var(--font-mono), ui-monospace, monospace;
+}
+
+.shell {
+  width: 100%;
+  max-width: var(--shell);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* Eyebrow: the utility voice of the page — mono, caps, tracked out. */
+.eyebrow {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--cape-deep);
+  margin: 0;
+}
+
+/* --- top bar --------------------------------------------------------- */
+
+.topbar {
+  border-bottom: var(--line);
+}
+
+.topbar__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-block: 1.1rem;
+}
+
+.wordmark {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 900;
+  font-size: 1.4rem;
+  letter-spacing: -0.03em;
+  font-variation-settings: "SOFT" 60, "WONK" 1;
+}
+
+.wordmark span {
+  color: var(--cape-deep);
+}
+
+.topbar__link {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.85rem;
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 2px solid var(--cape);
+  padding-bottom: 2px;
+}
+
+.topbar__link:hover {
+  border-bottom-color: var(--ink);
+}
+
+/* --- hero ------------------------------------------------------------ */
+
+.hero__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  align-items: center;
+  gap: clamp(2rem, 5vw, 4rem);
+  padding-block: clamp(3rem, 7vw, 5.5rem);
+}
+
+.hero__title {
+  font-size: clamp(2.6rem, 6.4vw, 4.5rem);
+  margin-block: 1rem 1.25rem;
+  text-wrap: balance;
+}
+
+.hero__title em {
+  font-style: normal;
+  color: var(--cape-deep);
+}
+
+.hero__lede {
+  font-size: clamp(1.05rem, 1.6vw, 1.2rem);
+  max-width: 34ch;
+  color: var(--ink-soft);
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--card);
+  border: var(--line);
+  border-radius: 999px;
+  padding: 0.3rem 0.85rem 0.3rem 0.6rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  box-shadow: var(--drop-sm);
+}
+
+.status::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--cape);
+  border: 2px solid var(--ink);
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  margin-top: 1.9rem;
+}
+
+.btn {
+  display: inline-block;
+  border: var(--line);
+  border-radius: 999px;
+  padding: 0.7rem 1.5rem;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: var(--drop);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.btn:hover {
+  transform: translate(3px, 3px);
+  box-shadow: var(--drop-sm);
+}
+
+.btn:active {
+  transform: translate(6px, 6px);
+  box-shadow: 0 0 0 var(--ink);
+}
+
+/* Ink on cape blue, not cream: #fff8e6 on #1b9be8 is only 2.9:1. */
+.btn--primary {
+  background: var(--cape);
+  color: var(--ink);
+}
+
+.btn--primary:hover {
+  color: var(--ink);
+}
+
+.btn--ghost {
+  background: var(--card);
+  color: var(--ink);
+}
+
+.btn--ghost:hover {
+  color: var(--ink);
+}
+
+.hero__art {
+  justify-self: center;
+  width: min(100%, 460px);
+  animation: float 5s ease-in-out infinite alternate;
+}
+
+.hero__art img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+@keyframes float {
+  from {
+    transform: translateY(-10px) rotate(-1deg);
+  }
+  to {
+    transform: translateY(10px) rotate(1.5deg);
+  }
+}
+
+/* --- landing (header + mascot only, for now) -------------------------- */
+
+.landing {
+  display: grid;
+  place-items: center;
+  min-height: clamp(20rem, 72vh, 44rem);
+  padding-block: clamp(2rem, 6vw, 4rem);
+}
+
+.landing__mascot {
+  display: block;
+  width: min(100%, 460px);
+  height: auto;
+  animation: float 5s ease-in-out infinite alternate;
+}
+
+/* --- command block ---------------------------------------------------- */
+
+.command {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  background: var(--card);
+  border: var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--drop);
+  padding: 0.9rem 0.9rem 0.9rem 1.2rem;
+  margin-top: 1.9rem;
+  max-width: 32rem;
+}
+
+.command__text {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.9rem;
+  flex: 1 1 14rem;
+  /* min-width:0 lets the flex item shrink past its content so the nowrap
+     command scrolls inside the block instead of widening the page. */
+  min-width: 0;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.command__prompt {
+  color: var(--ink-soft);
+  user-select: none;
+}
+
+.command__copy {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: var(--cream-deep);
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  padding: 0.4rem 0.9rem;
+  cursor: pointer;
+  min-width: 6.2rem;
+}
+
+.command__copy:hover {
+  background: var(--cape);
+  color: var(--ink);
+}
+
+/* --- the stack: the page's signature --------------------------------- */
+
+.stack {
+  border-top: var(--line);
+  background: var(--cream-deep);
+  padding-block: clamp(3.5rem, 8vw, 6rem);
+}
+
+.stack__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: start;
+}
+
+.stack__head {
+  max-width: 46ch;
+}
+
+.stack__title {
+  font-size: clamp(1.9rem, 3.6vw, 2.9rem);
+  margin-block: 0.7rem 1rem;
+}
+
+.stack__lede {
+  color: var(--ink-soft);
+}
+
+/* Rendered top-down, matching what the eye reads. `:has(~ .pr:hover)` then
+   selects the pull requests stacked ABOVE the hovered one — exactly the ones
+   a rebase at that level forces to move. The interaction is the explanation.
+   Where :has() is unsupported the rows simply don't light up. */
+.stack__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  list-style: none;
+  margin: 0 0 1.25rem;
+  padding: 0;
+}
+
+.pr {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  background: var(--batter);
+  border: var(--line);
+  border-radius: 999px;
+  box-shadow: var(--drop);
+  padding: 0.85rem 1.6rem;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.pr:nth-child(odd) {
+  transform: rotate(-0.5deg);
+}
+
+.pr:nth-child(even) {
+  transform: rotate(0.4deg);
+}
+
+.pr:hover,
+.pr:has(~ .pr:hover) {
+  background: var(--cape);
+  color: var(--ink);
+}
+
+/* Keep the hand-piled tilt while shifting — a bare translateX would
+   overwrite the rotation and snap the row flat mid-interaction. */
+.pr:nth-child(odd):hover,
+.pr:nth-child(odd):has(~ .pr:hover) {
+  transform: translateX(10px) rotate(-0.5deg);
+}
+
+.pr:nth-child(even):hover,
+.pr:nth-child(even):has(~ .pr:hover) {
+  transform: translateX(10px) rotate(0.4deg);
+}
+
+.pr__num {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+}
+
+.pr:hover .pr__num,
+.pr:has(~ .pr:hover) .pr__num {
+  color: var(--ink);
+}
+
+.pr__branch {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.95rem;
+  font-weight: 700;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.pr__base {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+
+.pr:hover .pr__base,
+.pr:has(~ .pr:hover) .pr__base {
+  color: var(--ink);
+}
+
+/* "would be rebased" tag — only shown on the ones stacked above the hover */
+.pr__flag {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.pr:has(~ .pr:hover) .pr__flag {
+  opacity: 1;
+}
+
+.stack__base {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  padding-left: 1.6rem;
+}
+
+.stack__base::before {
+  content: "";
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: var(--card);
+  border: 3px solid var(--ink);
+}
+
+.stack__hint {
+  margin-top: 2rem;
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+}
+
+/* --- roadmap --------------------------------------------------------- */
+
+.roadmap {
+  border-top: var(--line);
+  padding-block: clamp(3.5rem, 8vw, 6rem);
+}
+
+.roadmap__title {
+  font-size: clamp(1.9rem, 3.6vw, 2.9rem);
+  margin-block: 0.7rem 2.5rem;
+  max-width: 20ch;
+}
+
+.roadmap__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  gap: 1.5rem;
+}
+
+.card {
+  background: var(--card);
+  border: var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--drop);
+  padding: 1.6rem;
+}
+
+.card__title {
+  font-size: 1.35rem;
+  margin-bottom: 0.6rem;
+}
+
+.card__body {
+  color: var(--ink-soft);
+  font-size: 0.97rem;
+}
+
+/* --- footer ---------------------------------------------------------- */
+
+.footer {
+  border-top: var(--line);
+  background: var(--ink);
+  color: var(--batter);
+  padding-block: 2.5rem;
+}
+
+.footer__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.9rem;
+}
+
+.footer a {
+  color: var(--cream);
+}
+
+.footer a:hover {
+  color: var(--card);
+}
+
+.footer__note {
+  color: var(--cream-dim);
+}
+
+/* --- responsive ------------------------------------------------------ */
+
+@media (max-width: 860px) {
+  .hero__inner,
+  .stack__inner {
+    /* minmax(0, 1fr), not 1fr — a bare 1fr floors the column at the widest
+       item's min-content and pushes the whole page into horizontal scroll. */
+    grid-template-columns: minmax(0, 1fr);
+    text-align: left;
+  }
+
+  .hero__art {
+    order: -1;
+    width: min(100%, 320px);
+    justify-self: start;
+  }
+
+  .hero__lede {
+    max-width: none;
+  }
+
+  .pr {
+    padding-inline: 1.1rem;
+    gap: 0.6rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

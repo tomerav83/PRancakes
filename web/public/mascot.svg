@@ -1,0 +1,153 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 60 400 340" role="img" aria-label="A stack of pancakes with a friendly face, butter and syrup on top, wearing a blue cape and flying with one fist raised">
+  <title>The PRancakes mascot</title>
+
+  <!-- Original artwork for PRancakes. Ink-cartoon style: flat fills, heavy
+       round-capped outlines, no gradients, no soft shadows.
+
+       The idle animation lives here rather than in globals.css because the
+       page embeds this file with <img>: stylesheet rules outside the file
+       cannot reach these nodes, but CSS *inside* it still runs. That also
+       means the site's global prefers-reduced-motion rule does not apply, so
+       this document carries its own. -->
+  <style>
+    /* fill-box keeps every origin relative to the element's own bounding box,
+       which survives the parent rotation that view-box origins do not. */
+    .cape, .eyes, .butter, .fist { transform-box: fill-box; }
+
+    .cape {
+      transform-origin: 82% 4%;
+      animation: capeFlap 2.8s ease-in-out infinite;
+    }
+    @keyframes capeFlap {
+      0%, 100% { transform: rotate(-1.6deg) skewX(0deg); }
+      50%      { transform: rotate(1.8deg) skewX(-2.6deg); }
+    }
+
+    /* Both eyes share a cy, so scaling the pair's box squashes each lid onto
+       its own centre line. */
+    .eyes {
+      transform-origin: 50% 50%;
+      animation: blink 5.5s steps(1, end) infinite;
+    }
+    @keyframes blink {
+      0%, 91%, 96%, 100% { transform: scaleY(1); }
+      92%, 95%           { transform: scaleY(0.06); }
+    }
+
+    .butter {
+      transform-origin: 50% 100%;
+      animation: butterWobble 2.4s ease-in-out infinite;
+    }
+    @keyframes butterWobble {
+      0%, 100% { transform: rotate(-3deg); }
+      50%      { transform: rotate(3deg); }
+    }
+
+    .fist {
+      transform-origin: 50% 100%;
+      animation: pump 2.8s ease-in-out infinite;
+    }
+    @keyframes pump {
+      0%, 100% { transform: translate(0, 0); }
+      50%      { transform: translate(2px, -8px); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .cape, .eyes, .butter, .fist { animation: none; }
+    }
+  </style>
+
+  <g fill="none" stroke="#2E1B0F" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"
+     transform="rotate(-7 200 230)">
+
+    <!-- Cape, billowing back and left with a scalloped trailing edge.
+         Drawn first so the stack sits in front of it. -->
+    <g class="cape">
+      <path d="M258 186 C306 182 338 204 354 236 C330 242 314 254 304 268 C298 240 284 216 256 200 Z" fill="#1B9BE8"/>
+      <path d="M146 182 C86 172 32 194 10 244 C36 254 50 272 54 294 C72 304 82 324 86 350 C112 308 144 274 192 258 Z" fill="#1B9BE8"/>
+      <path d="M58 244 C44 276 48 312 86 350 C60 312 56 280 70 238" fill="#0B6FA8" stroke-width="5"/>
+      <path d="M110 226 C92 254 86 286 94 318" stroke="#0B6FA8" stroke-width="5"/>
+    </g>
+
+    <!-- Legs, trailing in flight. Behind the stack so the joins stay hidden. -->
+    <g>
+      <path d="M178 308 C172 330 172 348 178 364" stroke-width="26"/>
+      <path d="M232 308 C242 328 248 346 250 362" stroke-width="26"/>
+      <path d="M178 308 C172 330 172 348 178 364" stroke="#EFD7A6" stroke-width="17"/>
+      <path d="M232 308 C242 328 248 346 250 362" stroke="#EFD7A6" stroke-width="17"/>
+    </g>
+    <ellipse cx="176" cy="374" rx="24" ry="13" fill="#EFD7A6" stroke-width="6" transform="rotate(-14 176 374)"/>
+    <ellipse cx="254" cy="370" rx="24" ry="13" fill="#EFD7A6" stroke-width="6" transform="rotate(12 254 370)"/>
+
+    <!-- The stack: painted top-first so each pancake below overlaps the one
+         above. Two pancakes are drawn thick — the top one, which has to hold
+         the butter and syrup, and the second, which has to carry the face
+         (features spread across a seam read as a nose bridge). Their sides
+         bulge rather than run straight: a pancake that thick with flat flanks
+         reads as a box. The top one is kept close in width to the one below
+         and overlaps it deeply, or it reads as a hat rather than as part of
+         the stack. -->
+    <g transform="rotate(-2 200 128)">
+      <path d="M116 114 C116 98 284 98 284 114 C290 124 290 134 284 142 C284 158 116 158 116 142 C110 134 110 124 116 114 Z" fill="#F3DFB8"/>
+      <ellipse cx="200" cy="114" rx="84" ry="16" fill="#F7E9C9"/>
+    </g>
+    <g transform="rotate(2 201 180)">
+      <path d="M108 150 C108 134 292 134 292 150 C300 166 300 194 292 210 C292 226 108 226 108 210 C100 194 100 166 108 150 Z" fill="#F3DFB8"/>
+    </g>
+    <g transform="rotate(-2 205 233)">
+      <path d="M112 222 C112 206 298 206 298 222 L298 244 C298 260 112 260 112 244 Z" fill="#F3DFB8"/>
+    </g>
+    <g transform="rotate(2.5 204 263)">
+      <path d="M120 252 C120 236 288 236 288 252 L288 274 C288 290 120 290 120 274 Z" fill="#F3DFB8"/>
+    </g>
+    <g transform="rotate(-1.5 204 290)">
+      <path d="M134 280 C134 265 274 265 274 280 L274 300 C274 316 134 316 134 300 Z" fill="#F3DFB8"/>
+    </g>
+
+    <!-- Syrup, poured over the top pancake: the upper edge rides the rim and
+         the lower edge is a wavy drip line, so it reads as pooled and running
+         rather than as a bar laid across the stack. Held in from the rim so
+         the pancake underneath is not swallowed whole. -->
+    <path d="M136 112 C136 96 264 96 264 112 C264 122 258 132 258 144 C258 153 248 153 248 144
+             C248 133 243 128 236 127 C234 135 224 135 222 126 C210 130 186 130 174 126
+             C172 136 162 136 160 126 C153 128 146 134 146 146 C146 155 136 155 136 146
+             C136 133 136 122 136 112 Z" fill="#C98A3F" stroke-width="6"/>
+
+    <!-- Butter pat, riding the top pancake -->
+    <g class="butter">
+      <rect x="178" y="82" width="44" height="24" rx="8" fill="#F5C542" stroke-width="6" transform="rotate(-12 200 94)"/>
+    </g>
+
+    <!-- Face, sized to the whole stack rather than to one pancake -->
+    <circle cx="140" cy="194" r="12" fill="#D9A566" stroke="none" opacity="0.5"/>
+    <circle cx="264" cy="194" r="12" fill="#D9A566" stroke="none" opacity="0.5"/>
+    <g class="eyes">
+      <ellipse cx="166" cy="172" rx="17" ry="19" fill="#2E1B0F" stroke="none"/>
+      <ellipse cx="236" cy="172" rx="17" ry="19" fill="#2E1B0F" stroke="none"/>
+      <circle cx="172" cy="165" r="6" fill="#FDF6E6" stroke="none"/>
+      <circle cx="242" cy="165" r="6" fill="#FDF6E6" stroke="none"/>
+    </g>
+    <path d="M176 196 C186 220 218 220 228 196 Z" fill="#2E1B0F" stroke-width="6"/>
+
+    <!-- Chest emblem -->
+    <circle cx="202" cy="266" r="19" fill="#0B6FA8" stroke-width="6"/>
+    <g stroke="#FDF6E6" stroke-width="6">
+      <path d="M195 256 L195 277"/>
+      <path d="M195 258 C208 256 210 268 195 268"/>
+    </g>
+
+    <!-- Arms: trailing fist, then the raised one -->
+    <g>
+      <path d="M114 234 C90 248 72 262 60 272" stroke-width="26"/>
+      <path d="M114 234 C90 248 72 262 60 272" stroke="#EFD7A6" stroke-width="17"/>
+      <circle cx="46" cy="278" r="22" fill="#FDF6E6" stroke-width="6"/>
+
+      <g class="fist">
+        <path d="M298 236 C324 212 340 184 346 154" stroke-width="26"/>
+        <path d="M298 236 C324 212 340 184 346 154" stroke="#EFD7A6" stroke-width="17"/>
+        <circle cx="352" cy="140" r="22" fill="#FDF6E6" stroke-width="6"/>
+        <path d="M342 129 q10 7 20 2" stroke-width="4.5"/>
+      </g>
+    </g>
+  </g>
+</svg>

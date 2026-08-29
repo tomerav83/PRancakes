@@ -6,13 +6,28 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 PRancakes: an open-source tool for creating, managing, and synchronizing stacked pull requests on GitHub. Apache-2.0.
 
-## Status: greenfield
+## Status
 
-The repo contains only `README.md` and `LICENSE`. There is no source code, build file, test framework, or lint config yet.
+The only shipped code is the marketing site in `web/`: Next.js 16 (App Router) + TypeScript + plain CSS, statically exported (`output: 'export'`). The site lands in `web/out/`.
 
-- **The stack is undecided.** Do not scaffold in a language without asking first.
+```
+cd web && npm run build   # export to web/out
+cd web && npm run lint    # ESLint; the repo root has no lint config
+cd web && npm start       # serve the built export (NOT `next start` — it refuses an export build)
+```
+
+The build needs network access: `next/font/google` fetches and self-hosts the font files at build time.
+
+- **The CLI stack is still undecided.** `web/` is the homepage and nothing more — it is not a decision about the PRancakes tool itself. Ask before scaffolding the CLI in any language.
+- **Ask before adding dependencies to `web/` too.** It runs on `next`/`react`/`react-dom` and nothing else on purpose; no CSS framework, no icon or animation packages.
 - `.idea/` is an IntelliJ default Java/JDK-22 module stub, **not** a stack decision. Do not treat it as evidence the project is Java.
 - `.idea/`, `.claude/`, `_bmad/`, and `_bmad-output/` are gitignored — local tooling, not project files.
+
+## Brand
+
+Tokens live in `:root` in `web/app/globals.css`; the mascot is `web/public/mascot.svg`, original artwork.
+
+The visual language is hand-inked cartoon: flat fills, heavy round-capped ink outlines, hard offset shadows (`--drop`). No gradients and no blurred shadows anywhere — keep that rule for any new brand asset.
 
 ## GitHub access
 
