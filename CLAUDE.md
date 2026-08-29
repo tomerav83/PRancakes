@@ -11,7 +11,7 @@ PRancakes: an open-source tool for creating, managing, and synchronizing stacked
 Two things ship today. The marketing site in `web/`: Next.js 16 (App Router) + TypeScript + plain CSS, statically exported (`output: 'export'`), landing in `web/out/`. And the CLI in `cli/`: a dependency-free Go module whose one command prints the repository's open pull requests grouped into stacks.
 
 ```
-make                      # build the page if stale, then serve it (make PORT=9000)
+make                      # build the page if stale, then serve it (make REPO=~/x PORT=9000)
 make test                 # go test + vitest
 make lint                 # go vet + gofmt + eslint
 

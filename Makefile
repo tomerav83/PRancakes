@@ -1,22 +1,31 @@
 # PRancakes — one command to get the live view up:
 #
-#     make            build the site if it is stale, then serve it
-#     make PORT=9000  the same, on another port
+#     make                       serve this repository's stacks
+#     make REPO=~/code/thing     serve another repository's stacks
+#     make PORT=9000             the same, on another port
 #
-# The export is a real build artifact, so make rebuilds it only when something
-# under web/ actually changed.
+# REPO is what gh reads the pull requests from — the server runs there, while
+# the page it serves comes from this checkout. Both build artifacts are real
+# file targets, so make rebuilds them only when their sources changed.
 
 PORT ?= 8080
+REPO ?= .
+BIN := cli/prancakes
 SITE := web/out/stack.html
 WEB_SOURCES := $(shell find web/app web/public -type f 2>/dev/null) web/package.json web/next.config.ts
+GO_SOURCES := $(shell find cli -name '*.go' 2>/dev/null) cli/go.mod
 
 .DEFAULT_GOAL := serve
 .PHONY: serve site test lint clean
 
-serve: $(SITE)
-	cd cli && go run . serve --port $(PORT)
+# Absolute paths: the server is started from REPO, not from here.
+serve: $(SITE) $(BIN)
+	cd $(REPO) && $(CURDIR)/$(BIN) serve --port $(PORT) --site $(CURDIR)/web/out
 
 site: $(SITE)
+
+$(BIN): $(GO_SOURCES)
+	cd cli && go build -o prancakes .
 
 $(SITE): $(WEB_SOURCES) | web/node_modules
 	cd web && npm run build

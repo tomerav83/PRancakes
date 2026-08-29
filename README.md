@@ -28,9 +28,13 @@ a file or rebuilding anything. There is no polling — the view updates when you
 ask it to.
 
 ```bash
-make                # build the page if it is stale, then serve it
-make PORT=9000      # the same, on another port
+make                         # serve this repository's stacks
+make REPO=~/code/thing       # serve another repository's stacks
+make PORT=9000               # the same, on another port
 ```
+
+`REPO` is where `gh` reads the pull requests from; the page itself always comes
+from this checkout.
 
 Or run the two steps yourself:
 
