@@ -98,10 +98,32 @@ test('withSyntheticRoots adds exactly one root for an untracked base', () => {
   assert.equal(prs.filter((pr) => pr.number === null).length, 1)
 })
 
-test('withSyntheticRoots adds no root when the base matches an existing PR headRefName', () => {
+test('withSyntheticRoots adds no root when the base matches an existing open PR headRefName', () => {
   const prs = withSyntheticRoots([
     rawPr({ number: 1, headRefName: 'feat/a', baseRefName: 'feat/base', state: 'OPEN' }),
-    rawPr({ number: 2, headRefName: 'feat/base', baseRefName: 'feat/base', state: 'MERGED' }),
+    rawPr({ number: 2, headRefName: 'feat/base', baseRefName: 'feat/base', state: 'OPEN' }),
   ])
   assert.equal(prs.filter((pr) => pr.number === null).length, 0)
+})
+
+test('withSyntheticRoots drops merged PRs and floors their children on exactly one synthetic root', () => {
+  const prs = withSyntheticRoots([
+    rawPr({ number: 1, headRefName: 'feat/a', baseRefName: 'feat/base', state: 'OPEN' }),
+    rawPr({ number: 2, headRefName: 'feat/base', baseRefName: 'master', state: 'MERGED' }),
+  ])
+  assert.equal(prs.some((pr) => pr.number === 2), false)
+  const roots = prs.filter((pr) => pr.number === null)
+  assert.equal(roots.length, 1)
+  assert.equal(roots[0]?.headRefName, 'feat/base')
+})
+
+test('withSyntheticRoots collapses a chain of merged parents to one root, not one per level', () => {
+  const prs = withSyntheticRoots([
+    rawPr({ number: 1, headRefName: 'feat/c', baseRefName: 'feat/b', state: 'OPEN' }),
+    rawPr({ number: 2, headRefName: 'feat/b', baseRefName: 'feat/a', state: 'MERGED' }),
+    rawPr({ number: 3, headRefName: 'feat/a', baseRefName: 'master', state: 'MERGED' }),
+  ])
+  const roots = prs.filter((pr) => pr.number === null)
+  assert.equal(roots.length, 1)
+  assert.equal(roots[0]?.headRefName, 'feat/b')
 })

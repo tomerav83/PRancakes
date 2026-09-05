@@ -30,7 +30,11 @@ export function toStackPrState(pr: { state: 'OPEN' | 'CLOSED' | 'MERGED'; isDraf
 type RawPr = PrMetadata & { number: number }
 
 export function withSyntheticRoots(prs: RawPr[]): StackPr[] {
-  const stackPrs: StackPr[] = prs.map((pr) => ({
+  // Merged PRs are done and no longer need attention — drop them from the
+  // rendered list. A child whose parent was just dropped floors on a
+  // synthetic root, same as any other missing parent.
+  const openPrs = prs.filter((pr) => toStackPrState(pr) !== 'merged')
+  const stackPrs: StackPr[] = openPrs.map((pr) => ({
     number: pr.number,
     headRefName: pr.headRefName,
     baseRefName: pr.baseRefName,
@@ -38,7 +42,7 @@ export function withSyntheticRoots(prs: RawPr[]): StackPr[] {
     metadata: pr,
   }))
   const heads = new Set(stackPrs.map((pr) => pr.headRefName))
-  const roots = new Set(prs.map((pr) => pr.baseRefName).filter((ref) => !heads.has(ref)))
+  const roots = new Set(openPrs.map((pr) => pr.baseRefName).filter((ref) => !heads.has(ref)))
   for (const ref of roots) {
     stackPrs.push({ number: null, headRefName: ref, baseRefName: null, state: 'merged' })
   }
