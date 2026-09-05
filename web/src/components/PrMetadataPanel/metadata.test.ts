@@ -34,6 +34,15 @@ test('deriveStatus falls back to UNKNOWN for an unrecognized mergeStateStatus', 
   assert.equal(deriveStatus({ ...BASE, mergeStateStatus: bogus }).label, 'Open')
 })
 
+test('deriveStatus prioritizes a real behindBy over a CLEAN mergeStateStatus', () => {
+  assert.equal(deriveStatus({ ...BASE, mergeStateStatus: 'CLEAN', behindBy: 2 }).label, 'Out of sync')
+})
+
+test('deriveStatus falls through to mergeStateStatus when behindBy is zero or unset', () => {
+  assert.equal(deriveStatus({ ...BASE, mergeStateStatus: 'CLEAN', behindBy: 0 }).label, 'Synced')
+  assert.equal(deriveStatus({ ...BASE, mergeStateStatus: 'CLEAN' }).label, 'Synced')
+})
+
 test('formatRelative renders a past timestamp', () => {
   const seventyFiveSecondsAgo = new Date(Date.now() - 75_000).toISOString()
   assert.equal(formatRelative(seventyFiveSecondsAgo), '1 minute ago')
