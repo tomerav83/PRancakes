@@ -25,12 +25,30 @@
 
 .stack-meta-overlay {
   position: absolute;
-  top: 16px;
-  right: 16px;
-  width: 340px;
-  max-width: calc(100% - 32px);
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  background: rgba(10, 8, 5, 0.45);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  /* Only the panel card itself is clickable (see .pr-meta-panel) — the dimmed,
+     blurred backdrop lets clicks still reach a node underneath to swap focus. */
   pointer-events: none;
   z-index: 5;
+}
+
+.stack-meta-overlay--closing {
+  opacity: 0;
+  transition-duration: 0.18s;
+}
+
+@starting-style {
+  .stack-meta-overlay {
+    opacity: 0;
+  }
 }
 
 /* ---- node ---- */

@@ -119,7 +119,7 @@ function StackTreeCanvas({
       </ReactFlow>
 
       {focused?.metadata && (
-        <div className="stack-meta-overlay">
+        <div className={`stack-meta-overlay${closing ? ' stack-meta-overlay--closing' : ''}`}>
           <PrMetadataPanel metadata={focused.metadata} onClose={handleClose} closing={closing} />
         </div>
       )}
