@@ -1,6 +1,10 @@
 .pr-meta-panel {
+  position: relative;
   width: 100%;
   max-width: 380px;
+  /* The overlay wrapper is pointer-events: none (so it doesn't block canvas
+     panning); re-enable it here for the close button. */
+  pointer-events: auto;
   background: linear-gradient(180deg, var(--card-bg-top), var(--card-bg-bot));
   border: 1px solid var(--card-border);
   border-radius: 14px;
@@ -8,16 +12,44 @@
   box-shadow:
     0 1px 0 0 rgba(255, 247, 230, 0.06) inset,
     0 24px 48px -20px rgba(0, 0, 0, 0.7);
-  transition:
-    opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.26s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @starting-style {
   .pr-meta-panel {
     opacity: 0;
-    transform: scale(0.97) translateY(-6px);
   }
+}
+
+.pr-meta-panel--closing {
+  opacity: 0;
+  transition-duration: 0.18s;
+  pointer-events: none;
+}
+
+.pr-meta-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--panel-border);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink-muted);
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 0.12s, color 0.12s;
+}
+
+.pr-meta-close:hover,
+.pr-meta-close:focus-visible {
+  color: var(--ink);
+  border-color: var(--card-border);
 }
 
 .pr-meta-branch {

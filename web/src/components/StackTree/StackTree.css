@@ -44,7 +44,6 @@
   border: 1px solid var(--card-border);
   background: linear-gradient(180deg, var(--card-bg-top), var(--card-bg-bot));
   box-shadow: 0 2px 0 rgb(0 0 0 / 0.4);
-  text-decoration: none;
   color: inherit;
 }
 

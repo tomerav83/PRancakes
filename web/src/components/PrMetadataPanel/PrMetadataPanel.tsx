@@ -17,12 +17,23 @@ function FieldRow({ label, children }: { label: string; children: React.ReactNod
   )
 }
 
-export function PrMetadataPanel({ metadata }: { metadata: PrMetadata }) {
+export function PrMetadataPanel({
+  metadata,
+  onClose,
+  closing,
+}: {
+  metadata: PrMetadata
+  onClose: () => void
+  closing?: boolean
+}) {
   const status = deriveStatus(metadata)
   const statusColor = STATUS_COLOR[status.kind]
 
   return (
-    <div className="pr-meta-panel">
+    <div className={`pr-meta-panel${closing ? ' pr-meta-panel--closing' : ''}`}>
+      <button type="button" className="pr-meta-close" onClick={onClose} aria-label="Close panel">
+        &times;
+      </button>
       <div className="pr-meta-branch">
         <span className="pr-meta-head" title={metadata.headRefName}>{metadata.headRefName}</span>
         <span className="pr-meta-arrow">&rarr;</span>

@@ -6,14 +6,12 @@ export function PrNode({ data, selected }: NodeProps<PrFlowNode>) {
   const { pr } = data
   const { label, color } = STATES[pr.state] ?? STATES.open
   const isBase = pr.number === null
-  const Tag = pr.url ? 'a' : 'div'
 
   return (
-    <Tag
-      className={`stack-node${isBase ? ' stack-node-base' : ''}${pr.url ? ' stack-node-clickable' : ''}`}
+    <div
+      className={`stack-node${isBase ? ' stack-node-base' : ' stack-node-clickable'}`}
       style={{ width: NODE_W, height: NODE_H, ['--c' as string]: `var(--${color})` }}
       data-selected={selected}
-      {...(pr.url ? { href: pr.url, target: '_blank', rel: 'noopener noreferrer', title: `Open #${pr.number} on GitHub` } : {})}
     >
       <Handle type="target" position={Position.Bottom} className="stack-handle" />
       <span className="stack-node-dot" />
@@ -25,6 +23,6 @@ export function PrNode({ data, selected }: NodeProps<PrFlowNode>) {
       </span>
       {!isBase && <span className="stack-node-pill">{label}</span>}
       <Handle type="source" position={Position.Top} className="stack-handle" />
-    </Tag>
+    </div>
   )
 }
