@@ -123,6 +123,11 @@
   font-variant-numeric: tabular-nums;
 }
 
+.stack-node-sync-warning {
+  flex: none;
+  color: var(--changes);
+}
+
 .stack-node-pill {
   margin-left: auto;
   flex: none;

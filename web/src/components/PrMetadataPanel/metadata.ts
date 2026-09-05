@@ -33,6 +33,16 @@ const MERGE_STATUS_LABEL: Record<NonNullable<PrMetadata['mergeStateStatus']>, { 
   UNKNOWN: { kind: 'neutral', label: 'Open' },
 }
 
+// True when the branch is behind its base — shared by deriveStatus and
+// isOutOfSync so the "what counts as behind" rule lives in exactly one place.
+// Locally-computed ancestry (behindBy) overrides a plain CLEAN/UNKNOWN read,
+// since GitHub only reports BEHIND when the base branch has a protection rule
+// for it — but a real merge conflict (BLOCKED/DIRTY) is worse news and must win.
+function isBehindBase(m: PrMetadata, fromGitHub: { kind: StatusKind }): boolean {
+  if (fromGitHub.kind === 'blocked') return false
+  return m.mergeStateStatus === 'BEHIND' || (m.behindBy !== undefined && m.behindBy > 0)
+}
+
 // isDraft / state aren't part of the mergeStateStatus enum, so they stay as
 // guard clauses ahead of the table rather than being folded into it.
 export function deriveStatus(m: PrMetadata): { kind: StatusKind; label: string } {
@@ -42,13 +52,16 @@ export function deriveStatus(m: PrMetadata): { kind: StatusKind; label: string }
   // Falls back to UNKNOWN's entry for a mergeStateStatus GitHub adds later
   // that isn't in the table yet, rather than an undefined lookup.
   const fromGitHub = MERGE_STATUS_LABEL[m.mergeStateStatus ?? 'UNKNOWN'] ?? MERGE_STATUS_LABEL.UNKNOWN
-  // Locally-computed ancestry overrides a plain BEHIND/CLEAN/UNKNOWN read, since
-  // GitHub only reports BEHIND when the base branch has a protection rule for
-  // it — but a real merge conflict (BLOCKED/DIRTY) is worse news and must win.
-  if (fromGitHub.kind !== 'blocked' && m.behindBy !== undefined && m.behindBy > 0) {
-    return { kind: 'warning', label: 'Out of sync' }
-  }
+  if (isBehindBase(m, fromGitHub)) return { kind: 'warning', label: 'Out of sync' }
   return fromGitHub
+}
+
+// Narrower than deriveStatus's 'warning' kind, which also covers UNSTABLE
+// ("Checks pending") — this is only true for a branch behind its base.
+export function isOutOfSync(m: PrMetadata): boolean {
+  if (m.isDraft || m.state === 'MERGED' || m.state === 'CLOSED') return false
+  const fromGitHub = MERGE_STATUS_LABEL[m.mergeStateStatus ?? 'UNKNOWN'] ?? MERGE_STATUS_LABEL.UNKNOWN
+  return isBehindBase(m, fromGitHub)
 }
 
 const RELATIVE = new Intl.RelativeTimeFormat('en', { numeric: 'auto' })

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { deriveStatus, formatRelative, type PrMetadata } from './metadata.ts'
+import { deriveStatus, formatRelative, isOutOfSync, type PrMetadata } from './metadata.ts'
 
 const BASE: PrMetadata = {
   headRefName: 'feat/a',
@@ -13,6 +13,14 @@ const BASE: PrMetadata = {
   author: { login: 'someone' },
   updatedAt: new Date().toISOString(),
 }
+
+test('isOutOfSync agrees with deriveStatus, but excludes checks-pending warnings', () => {
+  assert.equal(isOutOfSync({ ...BASE, mergeStateStatus: 'BEHIND' }), true)
+  assert.equal(isOutOfSync({ ...BASE, mergeStateStatus: 'CLEAN', behindBy: 2 }), true)
+  assert.equal(isOutOfSync({ ...BASE, mergeStateStatus: 'UNSTABLE' }), false)
+  assert.equal(isOutOfSync({ ...BASE, mergeStateStatus: 'BLOCKED', behindBy: 2 }), false)
+  assert.equal(isOutOfSync({ ...BASE, isDraft: true, mergeStateStatus: 'BEHIND' }), false)
+})
 
 test('deriveStatus checks draft before merged', () => {
   assert.equal(deriveStatus({ ...BASE, isDraft: true, state: 'MERGED' }).label, 'Draft')
