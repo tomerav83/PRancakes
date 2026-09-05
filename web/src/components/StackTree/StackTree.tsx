@@ -8,7 +8,7 @@ import './StackTree.css'
 const nodeTypes = { pr: PrNode }
 const edgeTypes = { glow: GlowEdge }
 
-export function StackTree({ prs, height }: { prs: StackPr[]; height: number }) {
+export function StackTree({ prs, height }: { prs: StackPr[]; height: number | string }) {
   const filterId = useId()
   const { nodes, edges } = useMemo(() => {
     const flow = toFlow(prs)

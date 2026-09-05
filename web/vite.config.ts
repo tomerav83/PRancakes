@@ -8,7 +8,7 @@ const execFileAsync = promisify(execFile)
 
 // Exactly the fields stack.ts/metadata.ts consume.
 const PR_FIELDS =
-  'number,headRefName,baseRefName,state,isDraft,mergeStateStatus,changedFiles,additions,deletions,author,updatedAt,mergedBy,mergeCommit'
+  'number,headRefName,baseRefName,state,isDraft,mergeStateStatus,changedFiles,additions,deletions,author,updatedAt,mergedBy,mergeCommit,url'
 
 // One `gh pr list` call per request, run against the repo the dev server started
 // in — no PAT, no new dependency, no per-PR follow-up calls.

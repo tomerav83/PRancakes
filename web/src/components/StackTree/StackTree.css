@@ -34,6 +34,22 @@
   border: 1px solid var(--card-border);
   background: linear-gradient(180deg, var(--card-bg-top), var(--card-bg-bot));
   box-shadow: 0 2px 0 rgb(0 0 0 / 0.4);
+  text-decoration: none;
+  color: inherit;
+}
+
+.stack-node-clickable {
+  cursor: pointer;
+  transition: border-color 0.12s, box-shadow 0.12s, transform 0.12s;
+}
+
+.stack-node-clickable:hover,
+.stack-node-clickable:focus-visible {
+  border-color: var(--c);
+  box-shadow:
+    0 2px 0 rgb(0 0 0 / 0.4),
+    0 0 0 3px color-mix(in srgb, var(--c) 22%, transparent);
+  transform: translateY(-1px);
 }
 
 .stack-node-base {

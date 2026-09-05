@@ -12,6 +12,7 @@ export interface StackPr {
   headRefName: string
   baseRefName: string | null // null on the base branch
   state: StackPrState
+  url: string | null // null for the base branch itself, which has no PR to link to
 }
 
 export function toStackPrState(pr: { state: 'OPEN' | 'CLOSED' | 'MERGED'; isDraft: boolean }): StackPrState {
@@ -31,6 +32,7 @@ interface RawPr {
   baseRefName: string
   state: 'OPEN' | 'CLOSED' | 'MERGED'
   isDraft: boolean
+  url?: string
 }
 
 export function withSyntheticRoots(prs: RawPr[]): StackPr[] {
@@ -39,11 +41,12 @@ export function withSyntheticRoots(prs: RawPr[]): StackPr[] {
     headRefName: pr.headRefName,
     baseRefName: pr.baseRefName,
     state: toStackPrState(pr),
+    url: pr.url ?? null,
   }))
   const heads = new Set(stackPrs.map((pr) => pr.headRefName))
   const roots = new Set(prs.map((pr) => pr.baseRefName).filter((ref) => !heads.has(ref)))
   for (const ref of roots) {
-    stackPrs.push({ number: null, headRefName: ref, baseRefName: null, state: 'merged' })
+    stackPrs.push({ number: null, headRefName: ref, baseRefName: null, state: 'merged', url: null })
   }
   return stackPrs
 }
