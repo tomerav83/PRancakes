@@ -60,16 +60,12 @@
   margin-bottom: 18px;
   padding-bottom: 18px;
   border-bottom: 1px solid var(--panel-border);
-  overflow: hidden;
-  white-space: nowrap;
 }
 .pr-meta-head {
   color: var(--ink);
   font-weight: 700;
   font-family: 'IBM Plex Mono', monospace;
   font-size: 14px;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 .pr-meta-arrow {
   color: var(--ink-faint);
@@ -79,9 +75,6 @@
   color: var(--ink-muted);
   font-family: 'IBM Plex Mono', monospace;
   font-size: 14px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  min-width: 0;
 }
 
 .pr-meta-fields {

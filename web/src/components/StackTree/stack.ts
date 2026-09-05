@@ -49,7 +49,7 @@ export type PrNodeData = { pr: StackPr }
 export type PrFlowNode = Node<PrNodeData, 'pr'>
 
 // dagre is told these dimensions and PrNode renders at them, so the two can't drift.
-export const NODE_W = 264 // ponytail: fixed width still truncates very long branch names, widen further or measure text if that recurs
+export const NODE_W = 260
 export const NODE_H = 62
 export const ROW_GAP = 62 // dagre `ranksep` — also the pulse stagger's row pitch
 const GUTTER = 34 // dagre `nodesep`

@@ -35,9 +35,9 @@ export function PrMetadataPanel({
         &times;
       </button>
       <div className="pr-meta-branch">
-        <span className="pr-meta-head" title={metadata.headRefName}>{metadata.headRefName}</span>
+        <span className="pr-meta-head expandable" data-full={metadata.headRefName}>{metadata.headRefName}</span>
         <span className="pr-meta-arrow">&rarr;</span>
-        <span className="pr-meta-base" title={metadata.baseRefName}>{metadata.baseRefName}</span>
+        <span className="pr-meta-base expandable" data-full={metadata.baseRefName}>{metadata.baseRefName}</span>
       </div>
 
       <dl className="pr-meta-fields">
