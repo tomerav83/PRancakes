@@ -21,7 +21,7 @@ export function PrNode({ data, selected }: NodeProps<PrFlowNode>) {
         </span>
         <span className="stack-node-meta">{isBase ? 'base branch' : `#${pr.number}`}</span>
       </span>
-      <span className="stack-node-pill">{label}</span>
+      {!isBase && <span className="stack-node-pill">{label}</span>}
       <Handle type="source" position={Position.Top} className="stack-handle" />
     </div>
   )
