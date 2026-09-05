@@ -1,43 +1,71 @@
 .pr-meta-panel {
+  position: relative;
   width: 100%;
-  max-width: 380px;
+  max-width: 560px;
+  /* The overlay wrapper is pointer-events: none (so it doesn't block canvas
+     panning); re-enable it here for the close button. */
+  pointer-events: auto;
   background: linear-gradient(180deg, var(--card-bg-top), var(--card-bg-bot));
   border: 1px solid var(--card-border);
-  border-radius: 14px;
-  padding: 18px 20px 16px;
+  border-radius: 16px;
+  padding: 28px 32px 26px;
   box-shadow:
     0 1px 0 0 rgba(255, 247, 230, 0.06) inset,
-    0 24px 48px -20px rgba(0, 0, 0, 0.7);
-  transition:
-    opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.26s cubic-bezier(0.16, 1, 0.3, 1);
+    0 32px 64px -20px rgba(0, 0, 0, 0.75);
+  transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @starting-style {
   .pr-meta-panel {
     opacity: 0;
-    transform: scale(0.97) translateY(-6px);
   }
+}
+
+.pr-meta-panel--closing {
+  opacity: 0;
+  transition-duration: 0.18s;
+  pointer-events: none;
+}
+
+.pr-meta-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--panel-border);
+  border-radius: 7px;
+  background: transparent;
+  color: var(--ink-muted);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 0.12s, color 0.12s;
+}
+
+.pr-meta-close:hover,
+.pr-meta-close:focus-visible {
+  color: var(--ink);
+  border-color: var(--card-border);
 }
 
 .pr-meta-branch {
   display: flex;
   align-items: center;
-  gap: 7px;
-  font-size: 13.5px;
-  margin-bottom: 14px;
-  padding-bottom: 14px;
+  gap: 9px;
+  font-size: 15px;
+  margin-bottom: 18px;
+  padding-bottom: 18px;
   border-bottom: 1px solid var(--panel-border);
-  overflow: hidden;
-  white-space: nowrap;
 }
 .pr-meta-head {
   color: var(--ink);
   font-weight: 700;
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 12.5px;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-size: 14px;
 }
 .pr-meta-arrow {
   color: var(--ink-faint);
@@ -46,27 +74,24 @@
 .pr-meta-base {
   color: var(--ink-muted);
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 12.5px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  min-width: 0;
+  font-size: 14px;
 }
 
 .pr-meta-fields {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 14px;
   margin: 0;
 }
 .pr-meta-field {
   display: grid;
-  grid-template-columns: 70px 1fr;
-  column-gap: 12px;
+  grid-template-columns: 84px 1fr;
+  column-gap: 14px;
   align-items: center;
 }
 .pr-meta-field dt {
   margin: 0;
-  font-size: 11px;
+  font-size: 12.5px;
   font-weight: 600;
   color: var(--ink-faint);
 }
@@ -74,9 +99,9 @@
   margin: 0;
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 8px;
   min-width: 0;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 600;
   color: var(--ink);
 }

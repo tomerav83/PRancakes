@@ -1,5 +1,6 @@
 import dagre from '@dagrejs/dagre'
 import { Position, type Edge, type Node } from '@xyflow/react'
+import type { PrMetadata } from '../PrMetadataPanel/metadata.ts'
 
 // The graph only ever shows lifecycle state: `gh pr list --json state,isDraft`
 // returns state as 'OPEN'|'CLOSED'|'MERGED' plus isDraft — review/check state
@@ -12,6 +13,7 @@ export interface StackPr {
   headRefName: string
   baseRefName: string | null // null on the base branch
   state: StackPrState
+  metadata?: PrMetadata // absent for the base branch itself, which has no PR
 }
 
 export function toStackPrState(pr: { state: 'OPEN' | 'CLOSED' | 'MERGED'; isDraft: boolean }): StackPrState {
@@ -21,11 +23,37 @@ export function toStackPrState(pr: { state: 'OPEN' | 'CLOSED' | 'MERGED'; isDraf
   return 'open'
 }
 
+// A PR's baseRefName is the headRefName of the PR below it. When that parent
+// branch isn't itself an open PR (already merged, branch gone), the graph
+// needs a floor to land on — this synthesizes one per such ref, same as the
+// old hand-authored { number: null } root.
+type RawPr = PrMetadata & { number: number }
+
+export function withSyntheticRoots(prs: RawPr[]): StackPr[] {
+  // Merged PRs are done and no longer need attention — drop them from the
+  // rendered list. A child whose parent was just dropped floors on a
+  // synthetic root, same as any other missing parent.
+  const openPrs = prs.filter((pr) => toStackPrState(pr) !== 'merged')
+  const stackPrs: StackPr[] = openPrs.map((pr) => ({
+    number: pr.number,
+    headRefName: pr.headRefName,
+    baseRefName: pr.baseRefName,
+    state: toStackPrState(pr),
+    metadata: pr,
+  }))
+  const heads = new Set(stackPrs.map((pr) => pr.headRefName))
+  const roots = new Set(openPrs.map((pr) => pr.baseRefName).filter((ref) => !heads.has(ref)))
+  for (const ref of roots) {
+    stackPrs.push({ number: null, headRefName: ref, baseRefName: null, state: 'merged' })
+  }
+  return stackPrs
+}
+
 export type PrNodeData = { pr: StackPr }
 export type PrFlowNode = Node<PrNodeData, 'pr'>
 
 // dagre is told these dimensions and PrNode renders at them, so the two can't drift.
-export const NODE_W = 264 // ponytail: fixed width still truncates very long branch names, widen further or measure text if that recurs
+export const NODE_W = 260
 export const NODE_H = 62
 export const ROW_GAP = 62 // dagre `ranksep` — also the pulse stagger's row pitch
 const GUTTER = 34 // dagre `nodesep`

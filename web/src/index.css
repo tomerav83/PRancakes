@@ -37,3 +37,36 @@ body {
   color: var(--ink);
   font-family: 'Manrope', system-ui, -apple-system, sans-serif;
 }
+
+/* Free-form text in a fixed box (branch names, mostly). Ellipsizes at rest; on
+   hover the whole value expands in place over its neighbours, Primer
+   "expandable"-style: an ::after copy with a solid background painted exactly
+   over the original glyphs. The box never resizes and the full text stays in
+   the DOM, so screen readers and copy are unaffected. Needs a block/flex item
+   (overflow is ignored on inline boxes) and a `data-full` attribute equal to
+   the text. Pointer-only, and the chip shows on every hover — CSS can't tell
+   clipped from not. A keyboard/touch path waits on the graph's keyboard work. */
+.expandable {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.expandable:hover {
+  overflow: visible;
+}
+.expandable:hover::after {
+  content: attr(data-full);
+  position: absolute;
+  top: -4px;
+  left: -8px; /* border + padding put the copy exactly over the original glyphs */
+  z-index: 1;
+  width: max-content;
+  padding: 3px 7px;
+  border: 1px solid var(--card-border);
+  border-radius: 6px;
+  background: var(--panel);
+  box-shadow: 0 6px 18px rgb(0 0 0 / 0.5);
+  pointer-events: none;
+}

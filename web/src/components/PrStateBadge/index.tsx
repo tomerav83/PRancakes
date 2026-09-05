@@ -81,7 +81,7 @@ export function PrStateBadge({ state, metadata }: { state: PrState; metadata?: P
       </button>
       {open && (
         <div id={panelId} className="pr-badge-panel-slot">
-          <PrMetadataPanel metadata={metadata} />
+          <PrMetadataPanel metadata={metadata} onClose={() => setOpen(false)} />
         </div>
       )}
     </>

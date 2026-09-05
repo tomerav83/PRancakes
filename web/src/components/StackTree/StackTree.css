@@ -23,17 +23,77 @@
   color: var(--ink-faint);
 }
 
+.stack-meta-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  background: rgba(10, 8, 5, 0.45);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  /* Only the panel card itself is clickable (see .pr-meta-panel) — the dimmed,
+     blurred backdrop lets clicks still reach a node underneath to swap focus. */
+  pointer-events: none;
+  z-index: 5;
+}
+
+.stack-meta-overlay--closing {
+  opacity: 0;
+  transition-duration: 0.18s;
+}
+
+@starting-style {
+  .stack-meta-overlay {
+    opacity: 0;
+  }
+}
+
 /* ---- node ---- */
 
 .stack-node {
   display: flex;
-  align-items: center;
-  gap: 10px;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
   padding: 0 12px;
   border-radius: 10px;
   border: 1px solid var(--card-border);
   background: linear-gradient(180deg, var(--card-bg-top), var(--card-bg-bot));
   box-shadow: 0 2px 0 rgb(0 0 0 / 0.4);
+  color: inherit;
+}
+
+/* The ref has row 1 to itself — only its own length can truncate it; dot,
+   number, sync icon and pill all live on row 2. */
+.stack-node-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Each React Flow node is its own stacking context with an inline z-index
+   (1000 once selected), so a hovered node's expanded ref would paint under a
+   later or selected neighbour. Lift the hovered node above all of them;
+   !important is what beats the inline style. */
+.stack-tree .react-flow__node:hover {
+  z-index: 1001 !important;
+}
+
+.stack-node-clickable {
+  cursor: pointer;
+  transition: border-color 0.12s, box-shadow 0.12s, transform 0.12s;
+}
+
+.stack-node-clickable:hover,
+.stack-node-clickable:focus-visible {
+  border-color: var(--c);
+  box-shadow:
+    0 2px 0 rgb(0 0 0 / 0.4),
+    0 0 0 3px color-mix(in srgb, var(--c) 22%, transparent);
+  transform: translateY(-1px);
 }
 
 .stack-node-base {
@@ -57,20 +117,10 @@
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--c) 20%, transparent);
 }
 
-.stack-node-main {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-}
-
 .stack-node-ref {
   font-family: 'IBM Plex Mono', ui-monospace, monospace;
   font-size: 11.5px;
   color: var(--ink);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .stack-node-meta {
@@ -78,6 +128,11 @@
   font-size: 10.5px;
   color: var(--ink-faint);
   font-variant-numeric: tabular-nums;
+}
+
+.stack-node-sync-warning {
+  flex: none;
+  color: var(--changes);
 }
 
 .stack-node-pill {

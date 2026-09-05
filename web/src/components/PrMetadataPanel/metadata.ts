@@ -7,6 +7,10 @@ export interface PrMetadata {
   state: 'OPEN' | 'CLOSED' | 'MERGED'
   isDraft: boolean
   mergeStateStatus?: 'BEHIND' | 'BLOCKED' | 'CLEAN' | 'DIRTY' | 'UNSTABLE' | 'UNKNOWN'
+  // Commits the base ref has that the head ref doesn't, computed locally from
+  // git (see vite.config.ts) — undefined when the refs aren't resolvable
+  // locally (fork PR, deleted branch).
+  behindBy?: number
   changedFiles: number
   additions: number
   deletions: number
@@ -29,6 +33,16 @@ const MERGE_STATUS_LABEL: Record<NonNullable<PrMetadata['mergeStateStatus']>, { 
   UNKNOWN: { kind: 'neutral', label: 'Open' },
 }
 
+// True when the branch is behind its base — shared by deriveStatus and
+// isOutOfSync so the "what counts as behind" rule lives in exactly one place.
+// Locally-computed ancestry (behindBy) overrides a plain CLEAN/UNKNOWN read,
+// since GitHub only reports BEHIND when the base branch has a protection rule
+// for it — but a real merge conflict (BLOCKED/DIRTY) is worse news and must win.
+function isBehindBase(m: PrMetadata, fromGitHub: { kind: StatusKind }): boolean {
+  if (fromGitHub.kind === 'blocked') return false
+  return m.mergeStateStatus === 'BEHIND' || (m.behindBy !== undefined && m.behindBy > 0)
+}
+
 // isDraft / state aren't part of the mergeStateStatus enum, so they stay as
 // guard clauses ahead of the table rather than being folded into it.
 export function deriveStatus(m: PrMetadata): { kind: StatusKind; label: string } {
@@ -37,7 +51,17 @@ export function deriveStatus(m: PrMetadata): { kind: StatusKind; label: string }
   if (m.state === 'CLOSED') return { kind: 'neutral', label: 'Closed' }
   // Falls back to UNKNOWN's entry for a mergeStateStatus GitHub adds later
   // that isn't in the table yet, rather than an undefined lookup.
-  return MERGE_STATUS_LABEL[m.mergeStateStatus ?? 'UNKNOWN'] ?? MERGE_STATUS_LABEL.UNKNOWN
+  const fromGitHub = MERGE_STATUS_LABEL[m.mergeStateStatus ?? 'UNKNOWN'] ?? MERGE_STATUS_LABEL.UNKNOWN
+  if (isBehindBase(m, fromGitHub)) return { kind: 'warning', label: 'Out of sync' }
+  return fromGitHub
+}
+
+// Narrower than deriveStatus's 'warning' kind, which also covers UNSTABLE
+// ("Checks pending") — this is only true for a branch behind its base.
+export function isOutOfSync(m: PrMetadata): boolean {
+  if (m.isDraft || m.state === 'MERGED' || m.state === 'CLOSED') return false
+  const fromGitHub = MERGE_STATUS_LABEL[m.mergeStateStatus ?? 'UNKNOWN'] ?? MERGE_STATUS_LABEL.UNKNOWN
+  return isBehindBase(m, fromGitHub)
 }
 
 const RELATIVE = new Intl.RelativeTimeFormat('en', { numeric: 'auto' })
