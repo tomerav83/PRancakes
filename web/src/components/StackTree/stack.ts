@@ -13,7 +13,6 @@ export interface StackPr {
   headRefName: string
   baseRefName: string | null // null on the base branch
   state: StackPrState
-  url: string | null // null for the base branch itself, which has no PR to link to
   metadata?: PrMetadata // absent for the base branch itself, which has no PR
 }
 
@@ -28,7 +27,7 @@ export function toStackPrState(pr: { state: 'OPEN' | 'CLOSED' | 'MERGED'; isDraf
 // branch isn't itself an open PR (already merged, branch gone), the graph
 // needs a floor to land on — this synthesizes one per such ref, same as the
 // old hand-authored { number: null } root.
-type RawPr = PrMetadata & { number: number; url?: string }
+type RawPr = PrMetadata & { number: number }
 
 export function withSyntheticRoots(prs: RawPr[]): StackPr[] {
   const stackPrs: StackPr[] = prs.map((pr) => ({
@@ -36,13 +35,12 @@ export function withSyntheticRoots(prs: RawPr[]): StackPr[] {
     headRefName: pr.headRefName,
     baseRefName: pr.baseRefName,
     state: toStackPrState(pr),
-    url: pr.url ?? null,
     metadata: pr,
   }))
   const heads = new Set(stackPrs.map((pr) => pr.headRefName))
   const roots = new Set(prs.map((pr) => pr.baseRefName).filter((ref) => !heads.has(ref)))
   for (const ref of roots) {
-    stackPrs.push({ number: null, headRefName: ref, baseRefName: null, state: 'merged', url: null })
+    stackPrs.push({ number: null, headRefName: ref, baseRefName: null, state: 'merged' })
   }
   return stackPrs
 }

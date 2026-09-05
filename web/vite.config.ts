@@ -9,9 +9,9 @@ const execFileAsync = promisify(execFile)
 
 // Exactly the fields stack.ts/metadata.ts consume.
 const PR_FIELDS =
-  'number,headRefName,baseRefName,state,isDraft,mergeStateStatus,changedFiles,additions,deletions,author,updatedAt,mergedBy,mergeCommit,url,isCrossRepository'
+  'number,headRefName,baseRefName,state,isDraft,mergeStateStatus,changedFiles,additions,deletions,author,updatedAt,mergedBy,mergeCommit,isCrossRepository'
 
-type PrRow = PrMetadata & { number: number; url: string; isCrossRepository: boolean }
+type PrRow = PrMetadata & { number: number; isCrossRepository: boolean }
 
 // GitHub's own `mergeStateStatus` only reports BEHIND when the base branch has
 // a protection rule requiring up-to-date branches — a stacked PR based on a

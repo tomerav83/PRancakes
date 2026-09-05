@@ -16,7 +16,6 @@ const BASE_PR = {
   deletions: 0,
   author: { login: 'someone' },
   updatedAt: new Date().toISOString(),
-  url: 'https://example.invalid',
   isCrossRepository: false,
 }
 

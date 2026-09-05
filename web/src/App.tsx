@@ -5,7 +5,7 @@ import { withSyntheticRoots } from './components/StackTree/stack'
 
 // Shape of one row of `gh pr list --json <PR_FIELDS>` (see vite.config.ts) —
 // PrMetadata already mirrors that field-for-field, plus the PR number.
-type RawPr = PrMetadata & { number: number; url: string }
+type RawPr = PrMetadata & { number: number }
 
 function App() {
   const [prs, setPrs] = useState<RawPr[] | null>(null)

@@ -4,8 +4,8 @@ import { layout, toFlow, toStackPrState, withSyntheticRoots, type StackPr } from
 
 test('toFlow links a PR to its base by ref name', () => {
   const prs: StackPr[] = [
-    { number: null, headRefName: 'master', baseRefName: null, state: 'merged', url: null },
-    { number: 1, headRefName: 'feat/a', baseRefName: 'master', state: 'open', url: 'https://github.com/o/r/pull/1' },
+    { number: null, headRefName: 'master', baseRefName: null, state: 'merged' },
+    { number: 1, headRefName: 'feat/a', baseRefName: 'master', state: 'open' },
   ]
   const { nodes, edges } = toFlow(prs)
   assert.equal(nodes.length, 2)
@@ -15,9 +15,7 @@ test('toFlow links a PR to its base by ref name', () => {
 })
 
 test('toFlow drops the edge when the base branch is not in the list', () => {
-  const prs: StackPr[] = [
-    { number: 5, headRefName: 'feat/b', baseRefName: 'feat/gone', state: 'open', url: 'https://github.com/o/r/pull/5' },
-  ]
+  const prs: StackPr[] = [{ number: 5, headRefName: 'feat/b', baseRefName: 'feat/gone', state: 'open' }]
   const { nodes, edges } = toFlow(prs)
   assert.equal(nodes.length, 1)
   assert.equal(edges.length, 0)
@@ -25,15 +23,15 @@ test('toFlow drops the edge when the base branch is not in the list', () => {
 
 test('toFlow gives distinct ids to PRs that share a branch name', () => {
   const prs: StackPr[] = [
-    { number: 1, headRefName: 'feat/a', baseRefName: null, state: 'merged', url: 'https://github.com/o/r/pull/1' },
-    { number: 2, headRefName: 'feat/a', baseRefName: null, state: 'open', url: 'https://github.com/o/r/pull/2' },
+    { number: 1, headRefName: 'feat/a', baseRefName: null, state: 'merged' },
+    { number: 2, headRefName: 'feat/a', baseRefName: null, state: 'open' },
   ]
   const { nodes } = toFlow(prs)
   assert.equal(new Set(nodes.map((n) => n.id)).size, 2)
 })
 
 test('layout positions nodes top-left, offset from dagre center', () => {
-  const prs: StackPr[] = [{ number: null, headRefName: 'master', baseRefName: null, state: 'merged', url: null }]
+  const prs: StackPr[] = [{ number: null, headRefName: 'master', baseRefName: null, state: 'merged' }]
   const { nodes, edges } = toFlow(prs)
   const laidOut = layout(nodes, edges)
   assert.equal(laidOut.length, 1)
@@ -59,7 +57,6 @@ test('toFlow round-trips a gh pr list --json sample payload', () => {
       baseRefName: 'master',
       state: 'MERGED',
       isDraft: false,
-      url: 'https://github.com/o/r/pull/12',
     },
     {
       number: 13,
@@ -67,11 +64,10 @@ test('toFlow round-trips a gh pr list --json sample payload', () => {
       baseRefName: 'feat/graph-nodes',
       state: 'OPEN',
       isDraft: false,
-      url: 'https://github.com/o/r/pull/13',
     },
   ] as const
   const prs: StackPr[] = [
-    { number: null, headRefName: 'master', baseRefName: null, state: 'merged', url: null },
+    { number: null, headRefName: 'master', baseRefName: null, state: 'merged' },
     ...ghPrs.map((pr) => ({ ...pr, state: toStackPrState(pr) })),
   ]
   const { nodes, edges } = toFlow(prs)
