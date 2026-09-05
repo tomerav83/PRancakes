@@ -21,6 +21,33 @@ export function toStackPrState(pr: { state: 'OPEN' | 'CLOSED' | 'MERGED'; isDraf
   return 'open'
 }
 
+// A PR's baseRefName is the headRefName of the PR below it. When that parent
+// branch isn't itself an open PR (already merged, branch gone), the graph
+// needs a floor to land on — this synthesizes one per such ref, same as the
+// old hand-authored { number: null } root.
+interface RawPr {
+  number: number
+  headRefName: string
+  baseRefName: string
+  state: 'OPEN' | 'CLOSED' | 'MERGED'
+  isDraft: boolean
+}
+
+export function withSyntheticRoots(prs: RawPr[]): StackPr[] {
+  const stackPrs: StackPr[] = prs.map((pr) => ({
+    number: pr.number,
+    headRefName: pr.headRefName,
+    baseRefName: pr.baseRefName,
+    state: toStackPrState(pr),
+  }))
+  const heads = new Set(stackPrs.map((pr) => pr.headRefName))
+  const roots = new Set(prs.map((pr) => pr.baseRefName).filter((ref) => !heads.has(ref)))
+  for (const ref of roots) {
+    stackPrs.push({ number: null, headRefName: ref, baseRefName: null, state: 'merged' })
+  }
+  return stackPrs
+}
+
 export type PrNodeData = { pr: StackPr }
 export type PrFlowNode = Node<PrNodeData, 'pr'>
 

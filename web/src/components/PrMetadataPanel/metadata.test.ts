@@ -49,3 +49,21 @@ test('formatRelative returns a placeholder instead of throwing on bad input', ()
   assert.equal(formatRelative('not-a-date'), '—')
   assert.equal(formatRelative(undefined as unknown as string), '—')
 })
+
+// Shaped exactly like one row of `gh pr list --json <PR_FIELDS>` (see
+// vite.config.ts) — the real data source this endpoint returns.
+test('deriveStatus reads a gh pr list --json sample payload', () => {
+  const ghPr: PrMetadata = {
+    headRefName: 'feat/edge-render',
+    baseRefName: 'feat/graph-nodes',
+    state: 'OPEN',
+    isDraft: false,
+    mergeStateStatus: 'CLEAN',
+    changedFiles: 3,
+    additions: 40,
+    deletions: 2,
+    author: { login: 'tomerav83' },
+    updatedAt: new Date().toISOString(),
+  }
+  assert.equal(deriveStatus(ghPr).label, 'Synced')
+})
