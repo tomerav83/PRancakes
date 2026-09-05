@@ -6,11 +6,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 PRancakes: an open-source tool for creating, managing, and synchronizing stacked pull requests on GitHub. Apache-2.0.
 
-## Status: greenfield
+## Status
 
-The repo contains only `README.md` and `LICENSE`. There is no source code, build file, test framework, or lint config yet.
+`web/` is a React + TypeScript + Vite frontend (decided; do not re-scaffold or add a second stack without asking). There is no backend yet — the data it renders is hardcoded, since a browser page cannot shell out to `gh` (see GitHub access below) and no fetch path has been designed.
 
-- **The stack is undecided.** Do not scaffold in a language without asking first.
+- Layout: `web/src/components/` holds one directory per component (`PrStateBadge`, `PrMetadataPanel`, `StackTree`). `StackTree` renders the stack graph via `@xyflow/react` + `@dagrejs/dagre`.
+- Commands (run from `web/`): `npm run dev`, `npm run build` (`tsc -b && vite build`), `npm run lint` (oxlint), `npm run preview`.
+- Tests: `node --test` against the pure logic in `stack.ts` / `metadata.ts`. No framework is installed; Node's built-in runner is sufficient for now.
 - `.idea/` is an IntelliJ default Java/JDK-22 module stub, **not** a stack decision. Do not treat it as evidence the project is Java.
 - `.idea/`, `.claude/`, `_bmad/`, and `_bmad-output/` are gitignored — local tooling, not project files.
 

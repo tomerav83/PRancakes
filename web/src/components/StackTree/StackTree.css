@@ -1,0 +1,145 @@
+@import '@xyflow/react/dist/style.css';
+
+.stack-tree {
+  position: relative;
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  overflow: hidden;
+  background: radial-gradient(120% 80% at 50% 100%, #16130f 0%, var(--panel) 62%);
+
+  /* React Flow's own tokens, retoned to the pancake palette */
+  --xy-background-color: transparent;
+  --xy-controls-button-background-color: var(--panel);
+  --xy-controls-button-background-color-hover: #221d14;
+  --xy-controls-button-color: var(--ink-muted);
+  --xy-controls-button-color-hover: var(--ink);
+  --xy-controls-button-border-color: var(--panel-border);
+  --xy-node-border-radius: 10px;
+  --xy-selection-border: 1px dashed var(--card-border);
+  --xy-attribution-background-color: transparent;
+}
+
+.stack-tree .react-flow__attribution a {
+  color: var(--ink-faint);
+}
+
+/* ---- node ---- */
+
+.stack-node {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid var(--card-border);
+  background: linear-gradient(180deg, var(--card-bg-top), var(--card-bg-bot));
+  box-shadow: 0 2px 0 rgb(0 0 0 / 0.4);
+}
+
+.stack-node-base {
+  background: linear-gradient(180deg, #191510, #131110);
+  border-color: #332d24;
+}
+
+.stack-node[data-selected='true'] {
+  border-color: var(--c);
+  box-shadow:
+    0 2px 0 rgb(0 0 0 / 0.4),
+    0 0 0 3px color-mix(in srgb, var(--c) 22%, transparent);
+}
+
+.stack-node-dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--c);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--c) 20%, transparent);
+}
+
+.stack-node-main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.stack-node-ref {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 11.5px;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stack-node-meta {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 10.5px;
+  color: var(--ink-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.stack-node-pill {
+  margin-left: auto;
+  flex: none;
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--c);
+  border: 1px solid color-mix(in srgb, var(--c) 40%, transparent);
+  background: color-mix(in srgb, var(--c) 14%, transparent);
+  border-radius: 999px;
+  padding: 2.5px 6px;
+}
+
+/* Connection dragging isn't a feature yet, so the handles are anchors only. */
+.stack-handle {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ---- edge + sweep ---- */
+
+.stack-edge {
+  stroke: var(--edge);
+  stroke-width: 2.5;
+}
+
+.stack-pulse-halo,
+.stack-pulse-core {
+  fill: none;
+  stroke-linecap: round;
+  stroke-dasharray: 20 130;
+  animation: stack-sweep 3s linear infinite;
+}
+
+.stack-pulse-halo {
+  stroke: #ffb43c;
+  stroke-width: 4;
+  opacity: 0.9;
+}
+
+.stack-pulse-core {
+  stroke: #fff4dc;
+  stroke-width: 1.6;
+  opacity: 0.95;
+}
+
+@keyframes stack-sweep {
+  from {
+    stroke-dashoffset: 150;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stack-pulse-halo,
+  .stack-pulse-core {
+    display: none;
+  }
+}

@@ -1,0 +1,107 @@
+.pr-meta-panel {
+  width: 100%;
+  max-width: 380px;
+  background: linear-gradient(180deg, var(--card-bg-top), var(--card-bg-bot));
+  border: 1px solid var(--card-border);
+  border-radius: 14px;
+  padding: 18px 20px 16px;
+  box-shadow:
+    0 1px 0 0 rgba(255, 247, 230, 0.06) inset,
+    0 24px 48px -20px rgba(0, 0, 0, 0.7);
+  transition:
+    opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.26s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@starting-style {
+  .pr-meta-panel {
+    opacity: 0;
+    transform: scale(0.97) translateY(-6px);
+  }
+}
+
+.pr-meta-branch {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13.5px;
+  margin-bottom: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--panel-border);
+  overflow: hidden;
+  white-space: nowrap;
+}
+.pr-meta-head {
+  color: var(--ink);
+  font-weight: 700;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12.5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pr-meta-arrow {
+  color: var(--ink-faint);
+  flex-shrink: 0;
+}
+.pr-meta-base {
+  color: var(--ink-muted);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12.5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.pr-meta-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+}
+.pr-meta-field {
+  display: grid;
+  grid-template-columns: 70px 1fr;
+  column-gap: 12px;
+  align-items: center;
+}
+.pr-meta-field dt {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink-faint);
+}
+.pr-meta-field dd {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.pr-meta-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.pr-meta-add {
+  color: var(--open);
+}
+.pr-meta-del {
+  color: var(--closed);
+}
+
+.pr-meta-extra {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--panel-border);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pr-meta-panel {
+    transition-duration: 0.01ms !important;
+  }
+}

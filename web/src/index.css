@@ -1,0 +1,39 @@
+@import '@fontsource/manrope/500.css';
+@import '@fontsource/manrope/600.css';
+@import '@fontsource/manrope/700.css';
+@import '@fontsource/manrope/800.css';
+@import '@fontsource/ibm-plex-mono/500.css';
+@import '@fontsource/ibm-plex-mono/600.css';
+@import "tailwindcss";
+
+:root {
+  color-scheme: dark;
+
+  --bg: #0b0a08;
+  --panel: #131110;
+  --panel-border: #211e1a;
+  --ink: #f3efe6;
+  --ink-muted: #a79e8e;
+  --ink-faint: #8b806a;
+
+  --card-bg-top: #2c2519;
+  --card-bg-bot: #241f15;
+  --card-border: #4a4130;
+  --edge: #3b3428;
+
+  --draft: #9aa0a6;
+  --open: #3fc97a;
+  --merged: #a78bfa;
+  --closed: #f0674f;
+
+  --review-required: #7c8591;
+  --changes: #f0a63f;
+  --approved: #3fc97a;
+  --running: #4fa6f0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Manrope', system-ui, -apple-system, sans-serif;
+}
