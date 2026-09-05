@@ -23,6 +23,16 @@
   color: var(--ink-faint);
 }
 
+.stack-meta-overlay {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 340px;
+  max-width: calc(100% - 32px);
+  pointer-events: none;
+  z-index: 5;
+}
+
 /* ---- node ---- */
 
 .stack-node {

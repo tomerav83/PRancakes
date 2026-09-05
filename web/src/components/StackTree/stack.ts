@@ -1,5 +1,6 @@
 import dagre from '@dagrejs/dagre'
 import { Position, type Edge, type Node } from '@xyflow/react'
+import type { PrMetadata } from '../PrMetadataPanel/metadata.ts'
 
 // The graph only ever shows lifecycle state: `gh pr list --json state,isDraft`
 // returns state as 'OPEN'|'CLOSED'|'MERGED' plus isDraft — review/check state
@@ -13,6 +14,7 @@ export interface StackPr {
   baseRefName: string | null // null on the base branch
   state: StackPrState
   url: string | null // null for the base branch itself, which has no PR to link to
+  metadata?: PrMetadata // absent for the base branch itself, which has no PR
 }
 
 export function toStackPrState(pr: { state: 'OPEN' | 'CLOSED' | 'MERGED'; isDraft: boolean }): StackPrState {
@@ -26,14 +28,7 @@ export function toStackPrState(pr: { state: 'OPEN' | 'CLOSED' | 'MERGED'; isDraf
 // branch isn't itself an open PR (already merged, branch gone), the graph
 // needs a floor to land on — this synthesizes one per such ref, same as the
 // old hand-authored { number: null } root.
-interface RawPr {
-  number: number
-  headRefName: string
-  baseRefName: string
-  state: 'OPEN' | 'CLOSED' | 'MERGED'
-  isDraft: boolean
-  url?: string
-}
+type RawPr = PrMetadata & { number: number; url?: string }
 
 export function withSyntheticRoots(prs: RawPr[]): StackPr[] {
   const stackPrs: StackPr[] = prs.map((pr) => ({
@@ -42,6 +37,7 @@ export function withSyntheticRoots(prs: RawPr[]): StackPr[] {
     baseRefName: pr.baseRefName,
     state: toStackPrState(pr),
     url: pr.url ?? null,
+    metadata: pr,
   }))
   const heads = new Set(stackPrs.map((pr) => pr.headRefName))
   const roots = new Set(prs.map((pr) => pr.baseRefName).filter((ref) => !heads.has(ref)))

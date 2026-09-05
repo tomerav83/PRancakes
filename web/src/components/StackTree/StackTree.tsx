@@ -1,8 +1,9 @@
-import { useId, useMemo } from 'react'
-import { Background, BackgroundVariant, Controls, ReactFlow } from '@xyflow/react'
+import { useId, useMemo, useState } from 'react'
+import { Background, BackgroundVariant, Controls, ReactFlow, type Node as FlowNode } from '@xyflow/react'
+import { PrMetadataPanel } from '../PrMetadataPanel/PrMetadataPanel'
 import { GlowEdge } from './GlowEdge'
 import { PrNode } from './PrNode'
-import { layout, toFlow, type StackPr } from './stack'
+import { layout, toFlow, type PrNodeData, type StackPr } from './stack'
 import './StackTree.css'
 
 const nodeTypes = { pr: PrNode }
@@ -10,6 +11,7 @@ const edgeTypes = { glow: GlowEdge }
 
 export function StackTree({ prs, height }: { prs: StackPr[]; height: number | string }) {
   const filterId = useId()
+  const [hovered, setHovered] = useState<StackPr | null>(null)
   const { nodes, edges } = useMemo(() => {
     const flow = toFlow(prs)
     return { nodes: layout(flow.nodes, flow.edges), edges: flow.edges }
@@ -44,10 +46,18 @@ export function StackTree({ prs, height }: { prs: StackPr[]; height: number | st
         nodesDraggable={false}
         nodesConnectable={false}
         proOptions={{ hideAttribution: false }}
+        onNodeMouseEnter={(_, node: FlowNode<PrNodeData>) => setHovered(node.data.pr)}
+        onNodeMouseLeave={() => setHovered(null)}
       >
         <Background variant={BackgroundVariant.Dots} gap={22} size={1} color="var(--panel-border)" />
         <Controls showInteractive={false} />
       </ReactFlow>
+
+      {hovered?.metadata && (
+        <div className="stack-meta-overlay">
+          <PrMetadataPanel metadata={hovered.metadata} />
+        </div>
+      )}
     </div>
   )
 }

@@ -80,17 +80,32 @@ test('toFlow round-trips a gh pr list --json sample payload', () => {
   assert.equal(nodes.find((n) => n.data.pr.headRefName === 'feat/edge-render')!.data.pr.state, 'open')
 })
 
+// Minimal-but-complete `gh pr list --json <PR_FIELDS>` row, for tests that only
+// care about the root-synthesis logic, not the metadata fields themselves.
+function rawPr(overrides: Partial<Parameters<typeof withSyntheticRoots>[0][number]> & { number: number }) {
+  return {
+    headRefName: 'feat/x',
+    baseRefName: 'master',
+    state: 'OPEN' as const,
+    isDraft: false,
+    changedFiles: 0,
+    additions: 0,
+    deletions: 0,
+    author: { login: 'x' },
+    updatedAt: new Date().toISOString(),
+    ...overrides,
+  }
+}
+
 test('withSyntheticRoots adds exactly one root for an untracked base', () => {
-  const prs = withSyntheticRoots([
-    { number: 1, headRefName: 'feat/a', baseRefName: 'master', state: 'OPEN', isDraft: false },
-  ])
+  const prs = withSyntheticRoots([rawPr({ number: 1, headRefName: 'feat/a', baseRefName: 'master', state: 'OPEN' })])
   assert.equal(prs.filter((pr) => pr.number === null).length, 1)
 })
 
 test('withSyntheticRoots adds no root when the base matches an existing PR headRefName', () => {
   const prs = withSyntheticRoots([
-    { number: 1, headRefName: 'feat/a', baseRefName: 'feat/base', state: 'OPEN', isDraft: false },
-    { number: 2, headRefName: 'feat/base', baseRefName: 'feat/base', state: 'MERGED', isDraft: false },
+    rawPr({ number: 1, headRefName: 'feat/a', baseRefName: 'feat/base', state: 'OPEN' }),
+    rawPr({ number: 2, headRefName: 'feat/base', baseRefName: 'feat/base', state: 'MERGED' }),
   ])
   assert.equal(prs.filter((pr) => pr.number === null).length, 0)
 })
